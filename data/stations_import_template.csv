@@ -1,0 +1,35 @@
+name,network,latitude,longitude,address,city,state,pincode,is_24x7,parking_type,connector_type_1,power_kw_1,count_1,connector_type_2,power_kw_2,count_2,pricing_model,price_value,parking_charges,has_washroom,has_food,has_wifi
+"Orion Mall - Tata Power","Tata Power",13.0103,77.5537,"Dr. Rajkumar Road, Rajajinagar","Bangalore","Karnataka","560010",FALSE,"mall","CCS2",60,2,"Type 2 AC",7.2,2,"per_kwh",15.00,30,TRUE,TRUE,TRUE
+"Sample Station - Add Yours","Statiq",12.9716,77.5946,"Sample Address","Bangalore","Karnataka","560001",TRUE,"metro","Type 2 AC",3.3,3,"","","","per_kwh",13.00,0,TRUE,FALSE,TRUE
+
+# INSTRUCTIONS:
+# 1. Fill each row with station data
+# 2. Use comma separators
+# 3. Wrap text fields in quotes if they contain commas
+# 4. Leave blank fields empty (but keep the commas)
+# 5. Boolean values: TRUE or FALSE
+# 6. connector_type_2, power_kw_2, count_2 are optional (for second connector type)
+# 7. Save this file and use a script to import (or manually via Supabase Table Editor)
+
+# CONNECTOR TYPES (use exact spelling):
+# - CCS2
+# - Type 2 AC
+# - CHAdeMO
+# - Bharat AC001
+# - Bharat DC001
+# - GB/T DC
+
+# PRICING MODELS:
+# - per_kwh
+# - per_minute
+# - flat_session
+
+# PARKING TYPES:
+# - mall
+# - hotel
+# - highway
+# - office
+# - metro
+# - public
+# - fuel_station
+
