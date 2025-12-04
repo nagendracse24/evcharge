@@ -21,85 +21,111 @@ export function VehicleSelector() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+        className="btn-secondary flex items-center gap-3 min-w-[200px]"
       >
-        <span>🚗</span>
-        {selectedVehicle ? (
-          <span className="max-w-[150px] truncate">
-            {selectedVehicle.brand} {selectedVehicle.model}
-          </span>
-        ) : (
-          <span className="text-gray-600">Select Vehicle</span>
-        )}
-        <span className="text-gray-400">▼</span>
+        <div className="flex-1 text-left">
+          {selectedVehicle ? (
+            <>
+              <div className="text-xs text-[var(--text-tertiary)] font-medium">Vehicle</div>
+              <div className="text-sm font-semibold truncate">
+                {selectedVehicle.brand} {selectedVehicle.model}
+              </div>
+            </>
+          ) : (
+            <div className="text-sm font-semibold">Select Vehicle</div>
+          )}
+        </div>
+        <svg
+          className={`w-4 h-4 text-[var(--text-tertiary)] transition-transform ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {isOpen && (
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-30"
+            className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Dropdown */}
-          <div className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg z-40">
-            <div className="p-3 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-900">Select Your EV</h3>
-              <p className="text-xs text-gray-500 mt-1">
-                Get compatibility and cost estimates
+          {/* Dropdown - PROPERLY VISIBLE */}
+          <div className="absolute right-0 mt-2 w-[400px] bg-[var(--bg-primary)] border border-[var(--border-light)] rounded-xl shadow-2xl z-50 overflow-hidden fade-in">
+            {/* Header */}
+            <div className="px-4 py-3 border-b border-[var(--border-light)]">
+              <h3 className="font-semibold">Select Your Vehicle</h3>
+              <p className="text-xs text-[var(--text-tertiary)] mt-1">
+                Get personalized compatibility & cost estimates
               </p>
             </div>
 
-            {isLoading ? (
-              <div className="p-4 text-center text-gray-500">Loading...</div>
-            ) : (
-              <div className="p-2">
-                {vehicles.length === 0 ? (
-                  <div className="p-4 text-center text-gray-500">
-                    No vehicles available
-                  </div>
-                ) : (
-                  vehicles.map((vehicle) => (
+            {/* Content */}
+            <div className="max-h-[500px] overflow-y-auto">
+              {isLoading ? (
+                <div className="p-8 text-center">
+                  <div className="spinner mx-auto mb-3" />
+                  <p className="text-sm text-[var(--text-secondary)]">Loading vehicles...</p>
+                </div>
+              ) : vehicles.length === 0 ? (
+                <div className="p-8 text-center text-[var(--text-secondary)]">
+                  No vehicles available
+                </div>
+              ) : (
+                <div className="p-2">
+                  {vehicles.map((vehicle) => (
                     <button
                       key={vehicle.id}
                       onClick={() => handleSelect(vehicle)}
-                      className={`w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors ${
-                        selectedVehicle?.id === vehicle.id ? 'bg-primary-50' : ''
+                      className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                        selectedVehicle?.id === vehicle.id
+                          ? 'bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800'
+                          : 'hover:bg-[var(--bg-secondary)]'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-gray-900 text-sm">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm">
                             {vehicle.brand} {vehicle.model}
-                          </p>
+                          </div>
                           {vehicle.variant && (
-                            <p className="text-xs text-gray-500">{vehicle.variant}</p>
+                            <div className="text-xs text-[var(--text-tertiary)] mt-0.5">
+                              {vehicle.variant}
+                            </div>
                           )}
+                          <div className="flex items-center gap-3 mt-2 text-xs text-[var(--text-secondary)]">
+                            <span className="font-mono">{vehicle.battery_capacity_kwh}kWh</span>
+                            <span>•</span>
+                            <span>{vehicle.dc_connector_type || vehicle.ac_connector_type}</span>
+                          </div>
                         </div>
-                        <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">
+                        <div className="badge badge-neutral">
                           {vehicle.vehicle_type}
-                        </span>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {vehicle.battery_capacity_kwh}kWh • {vehicle.dc_connector_type || vehicle.ac_connector_type}
+                        </div>
                       </div>
                     </button>
-                  ))
-                )}
+                  ))}
+                </div>
+              )}
+            </div>
 
-                {/* Clear selection */}
-                {selectedVehicle && (
-                  <button
-                    onClick={() => {
-                      setSelectedVehicle(null)
-                      setIsOpen(false)
-                    }}
-                    className="w-full text-center px-3 py-2 mt-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    Clear Selection
-                  </button>
-                )}
+            {/* Footer */}
+            {selectedVehicle && (
+              <div className="px-4 py-3 border-t border-[var(--border-light)] bg-[var(--bg-secondary)]">
+                <button
+                  onClick={() => {
+                    setSelectedVehicle(null)
+                    setIsOpen(false)
+                  }}
+                  className="text-sm text-[var(--accent-error)] hover:underline font-medium"
+                >
+                  Clear Selection
+                </button>
               </div>
             )}
           </div>
@@ -108,4 +134,3 @@ export function VehicleSelector() {
     </div>
   )
 }
-

@@ -226,14 +226,21 @@ export const stationsRoutes: FastifyPluginAsync = async (server) => {
     }
   });
 
-  // GET /api/stations/:id - Get station details
+  // GET /api/stations/:id - Get station details (OPTIMIZED)
   server.get<{ Params: { id: string } }>('/:id', async (request, reply) => {
     try {
       const { id } = request.params;
 
+      // Single optimized query with joins
       const { data: station, error: stationError } = await supabase
         .from('stations')
-        .select('*')
+        .select(`
+          *,
+          connectors:station_connectors(*),
+          pricing:station_pricing(*),
+          amenities:station_amenities(*),
+          reviews:station_reviews(*, user_id)
+        `)
         .eq('id', id)
         .single();
 
@@ -250,36 +257,18 @@ export const stationsRoutes: FastifyPluginAsync = async (server) => {
         };
       }
 
-      // Fetch related data
-      const [connectorsRes, pricingRes, amenitiesRes, reviewsRes, photosRes] =
-        await Promise.all([
-          supabase.from('station_connectors').select('*').eq('station_id', id),
-          supabase.from('station_pricing').select('*').eq('station_id', id),
-          supabase.from('station_amenities').select('*').eq('station_id', id).single(),
-          supabase
-            .from('station_reviews')
-            .select('*, user_id')
-            .eq('station_id', id)
-            .order('created_at', { ascending: false }),
-          supabase
-            .from('station_photos')
-            .select('*')
-            .eq('station_id', id)
-            .order('created_at', { ascending: false }),
-        ]);
-
-      const reviews = reviewsRes.data || [];
+      const reviews = station.reviews || [];
       const avg_rating =
         reviews.length > 0
-          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          ? reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length
           : undefined;
 
       const enrichedStation: StationWithDetails = {
         ...station,
-        connectors: connectorsRes.data || [],
-        pricing: pricingRes.data || [],
-        amenities: amenitiesRes.data || undefined,
-        reviews,
+        connectors: station.connectors || [],
+        pricing: station.pricing || [],
+        amenities: station.amenities?.[0] || undefined,
+        reviews: reviews.slice(0, 10), // Limit to 10 reviews
         avg_rating,
         total_reviews: reviews.length,
       };

@@ -6,7 +6,6 @@ import { ConnectorType } from '@evcharge/shared'
 
 export function FilterPanel() {
   const { filters, setFilters, resetFilters } = useAppStore()
-  const [isExpanded, setIsExpanded] = useState(false)
 
   const connectorTypes = [
     'CCS2',
@@ -20,53 +19,64 @@ export function FilterPanel() {
   const networks = ['Tata Power', 'Statiq', 'ChargeZone', 'Ather Grid', 'JioBP']
 
   return (
-    <div className="bg-white border-b border-gray-200 p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="font-semibold text-gray-900">Filters</h2>
+    <div className="p-5">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-lg font-bold gradient-text">Filters</h2>
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="lg:hidden text-sm text-primary-600 font-medium"
+          onClick={resetFilters}
+          className="text-xs text-gray-500 hover:text-purple-600 font-semibold transition-colors"
         >
-          {isExpanded ? 'Hide' : 'Show'}
+          Reset
         </button>
       </div>
 
-      <div className={`space-y-4 ${!isExpanded && 'hidden lg:block'}`}>
+      <div className="space-y-5">
         {/* Sort By */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
             Sort by
           </label>
           <select
             value={filters.sort_by || 'distance'}
             onChange={(e) => setFilters({ sort_by: e.target.value as any })}
-            className="input text-sm"
+            className="input-modern text-sm w-full"
           >
-            <option value="distance">Nearest</option>
-            <option value="price">Cheapest</option>
-            <option value="rating">Highest Rated</option>
-            <option value="best">Best Overall</option>
+            <option value="distance">🎯 Nearest First</option>
+            <option value="price">💰 Cheapest First</option>
+            <option value="rating">⭐ Highest Rated</option>
+            <option value="best">🏆 Best Overall</option>
           </select>
         </div>
 
         {/* DC Fast Charging */}
         <div>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={filters.is_dc_fast || false}
-              onChange={(e) => setFilters({ is_dc_fast: e.target.checked || undefined })}
-              className="w-4 h-4 text-primary-600 rounded"
-            />
-            <span className="text-sm font-medium text-gray-700">
-              DC Fast Charging Only
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={filters.is_dc_fast || false}
+                onChange={(e) => setFilters({ is_dc_fast: e.target.checked || undefined })}
+                className="sr-only"
+              />
+              <div className={`w-12 h-7 rounded-full transition-all duration-300 ${
+                filters.is_dc_fast
+                  ? 'gradient-primary shadow-lg'
+                  : 'bg-gray-200'
+              }`}>
+                <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                  filters.is_dc_fast ? 'translate-x-6' : 'translate-x-1'
+                } mt-1`}></div>
+              </div>
+            </div>
+            <span className="text-sm font-semibold text-gray-700 group-hover:text-purple-600 transition-colors">
+              ⚡ DC Fast Charging Only
             </span>
           </label>
         </div>
 
         {/* Connector Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
             Connector Type
           </label>
           <select
@@ -74,7 +84,7 @@ export function FilterPanel() {
             onChange={(e) =>
               setFilters({ connector_type: e.target.value || undefined })
             }
-            className="input text-sm"
+            className="input-modern text-sm w-full"
           >
             <option value="">All Connectors</option>
             {connectorTypes.map((type) => (
@@ -87,13 +97,13 @@ export function FilterPanel() {
 
         {/* Network */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
             Network
           </label>
           <select
             value={filters.network || ''}
             onChange={(e) => setFilters({ network: e.target.value || undefined })}
-            className="input text-sm"
+            className="input-modern text-sm w-full"
           >
             <option value="">All Networks</option>
             {networks.map((network) => (
@@ -103,16 +113,7 @@ export function FilterPanel() {
             ))}
           </select>
         </div>
-
-        {/* Reset */}
-        <button
-          onClick={resetFilters}
-          className="w-full text-sm text-gray-600 hover:text-gray-900 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Reset Filters
-        </button>
       </div>
     </div>
   )
 }
-

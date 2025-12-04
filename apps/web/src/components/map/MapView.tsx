@@ -1,8 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import Map, { Marker, NavigationControl } from 'react-map-gl'
-import maplibregl from 'maplibre-gl'
+import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre'
 import { StationWithDetails } from '@evcharge/shared'
 
 interface MapViewProps {
@@ -12,7 +11,7 @@ interface MapViewProps {
 }
 
 const MAPLIBRE_STYLE = process.env.NEXT_PUBLIC_MAPLIBRE_STYLE_URL || 
-  'https://tiles.openfreemap.org/styles/liberty'
+  'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
 
 export function MapView({ stations, center = [77.5946, 12.9716], onStationClick }: MapViewProps) {
   const mapRef = useRef<any>(null)
@@ -57,7 +56,6 @@ export function MapView({ stations, center = [77.5946, 12.9716], onStationClick 
   return (
     <Map
       ref={mapRef}
-      mapLib={maplibregl}
       initialViewState={{
         longitude: center[0],
         latitude: center[1],

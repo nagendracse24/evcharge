@@ -6,18 +6,15 @@ import { StationCard } from './StationCard'
 interface StationListProps {
   stations: StationWithDetails[]
   isLoading?: boolean
+  onStationClick?: (stationId: string) => void
 }
 
-export function StationList({ stations, isLoading }: StationListProps) {
+export function StationList({ stations, isLoading, onStationClick }: StationListProps) {
   if (isLoading) {
     return (
-      <div className="p-4 space-y-3">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="card p-4 space-y-3">
-            <div className="skeleton h-5 w-2/3" />
-            <div className="skeleton h-4 w-1/2" />
-            <div className="skeleton h-4 w-full" />
-          </div>
+      <div className="p-4 space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="card-ultra shimmer h-40" />
         ))}
       </div>
     )
@@ -25,20 +22,25 @@ export function StationList({ stations, isLoading }: StationListProps) {
 
   if (stations.length === 0) {
     return (
-      <div className="p-8 text-center text-gray-500">
-        <div className="text-5xl mb-4">🔍</div>
-        <h3 className="text-lg font-medium text-gray-700 mb-2">No stations found</h3>
-        <p className="text-sm">Try adjusting your filters or search radius</p>
+      <div className="flex items-center justify-center h-full text-center p-8">
+        <div>
+          <div className="text-6xl mb-4">🔍</div>
+          <h3 className="text-xl font-bold mb-2">No stations found</h3>
+          <p className="text-sm text-gray-500">Try adjusting your search</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="p-4 space-y-3">
+    <div>
       {stations.map((station) => (
-        <StationCard key={station.id} station={station} />
+        <StationCard
+          key={station.id}
+          station={station}
+          onClick={() => onStationClick?.(station.id)}
+        />
       ))}
     </div>
   )
 }
-
