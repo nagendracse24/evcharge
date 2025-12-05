@@ -55,7 +55,7 @@ export default function HomePage() {
 
   // Filter and sort stations
   const filteredStations = (stations?.data || [])
-    .filter(station => {
+    .filter((station: any) => {
       // Search filter
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase()
