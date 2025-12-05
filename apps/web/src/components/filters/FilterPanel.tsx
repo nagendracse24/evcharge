@@ -80,9 +80,9 @@ export function FilterPanel() {
             Connector Type
           </label>
           <select
-            value={filters.connector_type || ''}
+            value={filters.connector_types?.[0] || ''}
             onChange={(e) =>
-              setFilters({ connector_type: e.target.value || undefined })
+              setFilters({ connector_types: e.target.value ? [e.target.value as any] : undefined })
             }
             className="input-modern text-sm w-full"
           >
@@ -101,8 +101,8 @@ export function FilterPanel() {
             Network
           </label>
           <select
-            value={filters.network || ''}
-            onChange={(e) => setFilters({ network: e.target.value || undefined })}
+            value={filters.networks?.[0] || ''}
+            onChange={(e) => setFilters({ networks: e.target.value ? [e.target.value] : undefined })}
             className="input-modern text-sm w-full"
           >
             <option value="">All Networks</option>
