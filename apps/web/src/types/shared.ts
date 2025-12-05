@@ -191,6 +191,7 @@ export interface StationFilters {
   min_rating?: number
   has_amenities?: string[]
   vehicle_id?: string
+  sort_by?: 'distance' | 'price' | 'rating' | 'best'
 }
 
 export interface StationQueryParams {
